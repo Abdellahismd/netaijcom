@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -70,9 +70,9 @@
         .rank-3 { background: linear-gradient(135deg, #b45309, var(--bronze)); }
         .rank-other { background: var(--primary-light); }
         .top-name { font-weight: 800; color: var(--text-dark); font-size: 1.05rem; margin-top: 15px; line-height: 1.4; }
-        .top-score { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin: 8px 0; }
-        .top-details { font-size: 0.8rem; color: var(--text-gray); line-height: 1.6; }
+        .top-details { font-size: 0.8rem; color: var(--text-gray); line-height: 1.6; margin-top: 8px; }
         .top-details span { color: var(--text-dark); font-weight: 700; }
+        .click-hint { font-size: 0.75rem; color: var(--primary); font-weight: bold; margin-top: 10px; display: inline-block; background: rgba(2, 132, 199, 0.1); padding: 4px 10px; border-radius: 8px;}
 
         /* ================= النتائج العامة ================= */
         main { padding: 0 15px 40px 15px; max-width: 1200px; margin: 0 auto; }
@@ -84,13 +84,13 @@
         .student-name { font-size: 1rem; font-weight: 800; color: var(--text-dark); line-height: 1.5; margin-bottom: 6px; word-wrap: break-word;}
         .student-number { font-size: 0.8rem; color: var(--text-gray); font-weight: 600; }
         .card-divider { height: 1px; background: rgba(2, 132, 199, 0.08); margin: 12px 0; }
-        .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-        .card-meta { font-size: 0.8rem; color: var(--text-gray); line-height: 1.7; }
-        .card-meta span { font-weight: 700; color: var(--text-dark); }
+        .card-footer { display: flex; justify-content: center; align-items: center; }
+        .card-meta { font-size: 0.85rem; color: var(--primary); font-weight: bold; }
         .result-badge { padding: 5px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; }
         .badge-success { background: rgba(16, 185, 129, 0.15); color: #059669; }
         .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent); }
+        .badge-info { background: rgba(14, 165, 233, 0.15); color: var(--info); }
 
         /* ================= تحميل هيكلي ================= */
         .skeleton-card { background: rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 18px; box-shadow: var(--shadow-soft); height: 150px; position: relative; overflow: hidden; border: var(--border-glass); }
@@ -170,7 +170,6 @@
     </div>
 
     <script>
-        // روابط البيانات محدثة بدقة
         const DATA_URLS = {
             concour: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTlJq68a973gbhoAwubzYAcdrMx1VVg3d14HH0aTZw6TBIRwU0FnVwU6fjCvHzxBg/pub?gid=361235812&single=true&output=csv",
             brevet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmlFARDtbicSO0XnNpLZhHGGaroLusxOIx7NsN34rkKYSWdSDn5wltRPjpUk4CaQ/pub?gid=1962707704&single=true&output=csv"
@@ -211,7 +210,6 @@
         function fetchData(examType) {
             showSkeletonLoading();
             
-            // استخدام التنزيل المباشر من PapaParse لحل مشكلة "يرجى التحقق من المعلومات" بشكل نهائي
             Papa.parse(DATA_URLS[examType], {
                 download: true,
                 header: true,
@@ -241,7 +239,7 @@
         function normalizeArabic(text) {
             if (!text) return "";
             return text.toString().toLowerCase()
-                .replace(/[أإآأ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652]/g, ""); 
+                .replace(/[أإآأ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ً-ْ]/g, ""); 
         }
 
         function getMatchingKey(keysArray, possibleKeys) {
@@ -257,12 +255,10 @@
         }
 
         function setupKeysAndParse(data) {
-            // تم إضافة moyg لمعدل ابريفة
             appState.keys.res = getMatchingKey(appState.columns, ['decision', 'décision', 'النتيجة', 'القرار', 'resultat', 'ملاحظة', 'قرار']);
-            appState.keys.score = getMatchingKey(appState.columns, ['moyg', 'total', 'مجموع', 'mgex', 'moyenne', 'moy', 'المعدل', 'note', 'points']);
+            appState.keys.score = getMatchingKey(appState.columns, ['moyg', 'moyenne', 'moy', 'المعدل', 'mgex', 'total', 'مجموع', 'note', 'points']);
             appState.keys.name = getMatchingKey(appState.columns, ['nom', 'name', 'اسم', 'الاسم']);
             appState.keys.num = getMatchingKey(appState.columns, ['numero', 'num', 'رقم', 'المترشح']);
-            
             appState.keys.wilaya = getMatchingKey(appState.columns, ['wilaya', 'ولاية', 'region', 'dren']);
             appState.keys.center = getMatchingKey(appState.columns, ['centre', 'مركز', 'moughataa', 'مقاطعة']);
             appState.keys.school = getMatchingKey(appState.columns, ['ecole', 'etablissement', 'مدرسة', 'مؤسسة']);
@@ -275,32 +271,38 @@
                 if (scoreStr !== "") {
                     let cleanStr = scoreStr.replace(/[^\d.,]/g, '').replace(',', '.');
                     let parsedScore = parseFloat(cleanStr);
-                    if (!isNaN(parsedScore)) scoreVal = parsedScore;
+                    if (!isNaN(parsedScore)) {
+                        scoreVal = Number(parsedScore.toFixed(2));
+                        scoreStr = scoreVal.toString();
+                    }
                 }
 
                 let status = 'fail';
                 
-                // شروط قاطعة: آدمين ناجح، آجورني راسب، والغياب غياب.
-                let isAdmis = resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل') || resultStr === 'a' || resultStr.includes('adm');
-                let isAjourne = resultStr.includes('راسب') || resultStr.includes('ajourn') || resultStr.includes('آجورني') || resultStr.includes('echec') || resultStr.includes('مقصى');
-                let isAbsent = resultStr.includes('غائب') || resultStr.includes('abs');
-                
-                if (isAbsent) {
-                    status = 'absent';
-                } else if (isAdmis) {
-                    status = 'pass';
-                } else if (isAjourne) {
-                    status = 'fail';
-                } else if (resultStr.includes('دورة') || resultStr.includes('session') || resultStr.includes('تكميلية')) {
-                    status = 'session';
+                // تطبيق شروط الفرز الدقيقة لكل شهادة
+                if (appState.currentExam === 'concour') {
+                    // الكونكور: ناجح إذا كان المجموع 80 فما فوق (إلى 200)
+                    if (scoreVal >= 80) {
+                        status = 'pass';
+                    } else {
+                        status = 'fail';
+                    }
                 } else {
-                    // الاعتماد على النقاط (المعدل) إذا كان القرار فارغاً
-                    if (appState.currentExam === 'concour') {
-                        // الكونكور: من 80 إلى 200 ناجح
-                        if (scoreVal >= 80 && scoreVal <= 200) status = 'pass';
-                        else status = 'fail';
-                    } else if (appState.currentExam === 'brevet') {
-                        // ابريفة
+                    // ابريفة: الاعتماد على النصوص الموجودة في الملف 
+                    let isAdmis = resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل') || resultStr === 'a' || resultStr.includes('adm');
+                    let isAjourne = resultStr.includes('راسب') || resultStr.includes('ajourn') || resultStr.includes('آجورني') || resultStr.includes('echec') || resultStr.includes('مقصى');
+                    let isAbsent = resultStr.includes('غائب') || resultStr.includes('abs');
+                    
+                    if (isAbsent) {
+                        status = 'absent';
+                    } else if (isAdmis) {
+                        status = 'pass';
+                    } else if (isAjourne) {
+                        status = 'fail';
+                    } else if (resultStr.includes('دورة') || resultStr.includes('session') || resultStr.includes('تكميلية')) {
+                        status = 'session';
+                    } else {
+                        // حالة احتياطية لابريفة
                         if (scoreVal >= 10) status = 'pass';
                         else status = 'fail';
                     }
@@ -321,7 +323,7 @@
                 student._searchStr = normalizeArabic(searchData);
             });
 
-            // الترتيب التلقائي للجميع من أعلى نقطة/معدل إلى أقل نقطة
+            // الترتيب حسب النقاط في الخلفية (لأجل قائمة الأوائل) دون إظهارها في الكروت
             data.sort((a, b) => {
                 let valA = a._scoreVal !== -1 ? a._scoreVal : -999;
                 let valB = b._scoreVal !== -1 ? b._scoreVal : -999;
@@ -456,7 +458,7 @@
                     <div class="card-divider"></div>
                     <div class="card-footer">
                         <div class="card-meta">
-                            المعدل/المجموع: <span>${student._scoreStr || '-'}</span>
+                            اضغط لعرض التفاصيل الكاملة 👇
                         </div>
                     </div>
                 `;
@@ -490,16 +492,17 @@
                 card.innerHTML = `
                     <div class="top-rank-badge ${rankClass}">${rank}</div>
                     <div class="top-name">${student._nameStr}</div>
-                    <div class="top-score">${student._scoreStr || '-'}</div>
                     <div class="top-details">
                         مدرسة: <span>${appState.keys.school ? (student[appState.keys.school] || '-') : '-'}</span><br>
                         مركز: <span>${appState.keys.center ? (student[appState.keys.center] || '-') : '-'}</span>
                     </div>
+                    <span class="click-hint">اضغط للتفاصيل</span>
                 `;
                 topContainer.appendChild(card);
             });
         }
 
+        // ================= إكمال كود صفحة التفاصيل ================= //
         function openDetailsPage(student, rank) {
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('details-page').style.display = 'block';
@@ -508,42 +511,43 @@
             list.innerHTML = '';
             
             const motivation = document.getElementById('motivation-container');
-            if(student._status === 'pass') {
-                motivation.innerHTML = '🎉 ألف مبروك النجاح! 🎉'; motivation.style.color = '#059669';
-                if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            } else if(student._status === 'fail') {
-                motivation.innerHTML = 'حظاً أوفر في المرة القادمة، لا تيأس! 💪'; motivation.style.color = '#ef4444';
-            } else if(student._status === 'absent') {
-                motivation.innerHTML = 'غائب - نرجو أن تكون بأفضل حال 🤍'; motivation.style.color = '#f59e0b';
-            } else {
-                motivation.innerHTML = 'نتمنى لك التوفيق 🌟'; motivation.style.color = '#d97706';
-            }
-
-            let statusText = 'راسب';
-            if (student._status === 'pass') statusText = 'ناجح';
-            else if (student._status === 'absent') statusText = 'غائب';
-            else if (student._status === 'session') statusText = 'دورة';
+            motivation.innerHTML = '';
             
-            list.innerHTML = `
-                <div class="data-row" style="background: rgba(2, 132, 199, 0.1);">
-                    <div class="data-label">حالة النتيجة (القرار)</div>
-                    <div class="data-val" style="color: var(--primary);">${statusText}</div>
-                </div>
-                <div class="data-row" style="background: rgba(2, 132, 199, 0.05);">
-                    <div class="data-label">الترتيب العام</div>
-                    <div class="data-val">${rank}</div>
-                </div>
-            `;
-
-            appState.columns.forEach(col => {
-                const val = student[col];
-                if(val && val.trim() !== '') {
-                    list.innerHTML += `
-                        <div class="data-row">
-                            <div class="data-label">${col}</div>
-                            <div class="data-val">${val}</div>
-                        </div>
-                    `;
+            if (student._status === 'pass') {
+                motivation.innerHTML = '<div style="color: #059669;">ألف مبروك النجاح! 🎉</div>';
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                }
+            } else if (student._status === 'fail') {
+                motivation.innerHTML = '<div style="color: var(--danger);">حظاً أوفر في المرة القادمة إن شاء الله</div>';
+            } else if (student._status === 'absent') {
+                motivation.innerHTML = '<div style="color: var(--accent);">غائب عن الامتحان</div>';
+            } else if (student._status === 'session') {
+                motivation.innerHTML = '<div style="color: var(--info);">مؤهل للدورة التكميلية</div>';
+            }
+            
+            // إضافة التفاصيل
+            const detailItems = [
+                { label: 'الاسم', value: student._nameStr },
+                { label: 'رقم المترشح', value: appState.keys.num ? student[appState.keys.num] : '-' },
+                { label: 'الترتيب العام', value: rank },
+                { label: 'المعدل/المجموع', value: student._scoreStr !== "" ? student._scoreStr : '-' },
+                { label: 'القرار (الأصلي)', value: student._resStr !== "" ? student._resStr : '-' },
+                { label: 'المدرسة', value: appState.keys.school ? student[appState.keys.school] : '-' },
+                { label: 'المركز', value: appState.keys.center ? student[appState.keys.center] : '-' },
+                { label: 'الولاية', value: appState.keys.wilaya ? student[appState.keys.wilaya] : '-' }
+            ];
+            
+            detailItems.forEach(item => {
+                if (item.value && item.value !== '-') {
+                    const row = document.createElement('div');
+                    row.className = 'data-row';
+                    row.innerHTML = `<span class="data-label">${item.label}</span><span class="data-val">${item.value}</span>`;
+                    list.appendChild(row);
                 }
             });
         }
