@@ -2,17 +2,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-adsense-account" content="ca-pub-5480615715478759">
     <title>نتائج الامتحانات الوطنية 2026</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <style>
         /* ================= المتغيرات والألوان المحسّنة ================= */
-        :root {
+       :root {
             --primary: #1e3a8a;
             --primary-light: #3b82f6;
             --primary-dark: #1e293b;
@@ -29,7 +25,6 @@
             --shadow-hover: 0 20px 40px rgba(30, 58, 138, 0.08);
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -37,7 +32,6 @@
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-
         body {
             background-color: var(--bg-main);
             color: var(--text-dark);
@@ -50,7 +44,7 @@
         ::-webkit-scrollbar { display: none; }
 
         /* ================= الهيدر المنحني الفخم ================= */
-        .curved-header {
+  .curved-header {
             background: linear-gradient(135deg, var(--primary), #0f172a);
             border-radius: 0 0 50px 50px;
             padding: 40px 20px 70px 20px;
@@ -58,8 +52,7 @@
             box-shadow: 0 15px 35px rgba(30, 58, 138, 0.15);
             position: relative;
         }
-
-        .header-title {
+  .header-title {
             color: #ffffff;
             font-size: 1.4rem; 
             font-weight: 800;
@@ -67,7 +60,6 @@
             letter-spacing: -0.5px;
             text-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-
         /* ================= أزرار اختيار المسابقة ================= */
         .exam-tabs {
             display: flex;
@@ -76,7 +68,6 @@
             max-width: 480px;
             margin: 0 auto;
         }
-
         .exam-btn {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -89,12 +80,10 @@
             backdrop-filter: blur(12px);
             transition: var(--transition);
         }
-
         .exam-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
-
         .exam-btn.active {
             background: #ffffff;
             color: var(--primary);
@@ -102,7 +91,6 @@
             transform: scale(1.02);
             border-color: #ffffff;
         }
-
         /* ================= مربع البحث العائم ================= */
         .search-container {
             max-width: 520px;
@@ -111,7 +99,6 @@
             position: relative;
             z-index: 10;
         }
-
         .search-input {
             width: 100%;
             padding: 16px 24px;
@@ -131,7 +118,6 @@
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-
         .suggestions-box {
             position: absolute;
             top: 100%; left: 0; right: 0;
@@ -157,10 +143,8 @@
         }
         .suggestion-item:last-child { border-bottom: none; }
         .suggestion-item:hover { background: #f1f5f9; color: var(--primary); }
-
         /* ================= بطاقات النتائج المحسّنة ================= */
-        main { padding: 0 15px 40px 15px; flex: 1; }
-        
+        main { padding: 0 15px 40px 15px; flex: 1; }       
         #results-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -168,7 +152,6 @@
             max-width: 1100px;
             margin: 0 auto;
         }
-
         .student-card {
             background: var(--card-bg);
             padding: 22px;
@@ -179,13 +162,11 @@
             transition: var(--transition);
             position: relative;
         }
-
         .student-card:hover {
             transform: translateY(-6px);
             box-shadow: var(--shadow-hover);
             border-color: rgba(5b, 130, 246, 0.2);
         }
-
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -194,10 +175,8 @@
             padding-bottom: 15px;
             border-bottom: 1px dashed #e2e8f0;
         }
-
         .student-name { font-size: 1.05rem; font-weight: 800; color: #1e293b; line-height: 1.4; }
         .student-number { font-size: 0.8rem; color: var(--text-gray); margin-top: 5px; font-weight: 600; }
-
         .result-badge {
             padding: 6px 14px;
             border-radius: 25px;
@@ -209,10 +188,8 @@
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
         .badge-warning { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
         .badge-info { background: rgba(14, 165, 233, 0.12); color: var(--info); }
-
         .card-details p { margin: 6px 0; font-size: 0.85rem; color: var(--text-gray); font-weight: 500; }
         .card-details span { font-weight: 700; color: var(--text-dark); }
-
         /* ================= هيدر وواجهة الحالات الخاصة والتحميل المعلق ================= */
         .status-notice-box {
             grid-column: 1/-1; text-align: center; padding: 45px 25px; background: #fff; border-radius: 24px;
@@ -222,7 +199,6 @@
         .status-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
         .status-title { font-weight: 800; font-size: 1.25rem; color: var(--primary); margin-bottom: 10px; }
         .status-desc { color: var(--text-gray); font-size: 0.9rem; line-height: 1.6; }
-
         /* ================= سكيلتون التحميل اللطيف ================= */
         .skeleton-card {
             background: #fff; padding: 22px; border-radius: 20px; box-shadow: var(--shadow-soft); height: 140px; position: relative; overflow: hidden;
@@ -235,54 +211,42 @@
         .skeleton-line { height: 11px; background: #f1f5f9; border-radius: 6px; margin-bottom: 14px; }
         .skeleton-line.short { width: 50%; }
         .skeleton-line.title { height: 18px; width: 75%; margin-bottom: 22px; }
-
         /* ================= صفحة التفاصيل المستقلة الفخمة ================= */
         #details-page {
             display: none; padding: 30px 15px; max-width: 650px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
+        }     
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
         .details-container { background: var(--card-bg); border-radius: 28px; padding: 30px 25px; box-shadow: var(--shadow-hover); }
-
         .details-header-bar {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px dashed #f1f5f9; padding-bottom: 20px;
         }
-
         .details-header-bar h3 { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-align: center; flex-grow: 1; padding: 0 10px; }
-
         .btn-close-page {
             background: #f1f5f9; border: none; color: var(--text-dark); padding: 10px 20px; border-radius: 14px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
         }
         .btn-close-page:hover { background: #e2e8f0; transform: scale(1.03); }
-
         .motivation-msg { padding: 18px; border-radius: 18px; margin: 20px 0; text-align: center; line-height: 1.7; font-size: 0.95rem; font-weight: 700; }
         .msg-success { background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.03)); color: #047857; border: 1px solid rgba(16, 185, 129, 0.15); }
         .msg-fail { background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.03)); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.15); }
         .msg-session { background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(14, 165, 233, 0.03)); color: #0369a1; border: 1px solid rgba(14, 165, 233, 0.15); }
         .msg-absent { background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.03)); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.15); }
-
         .full-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
         .data-item { background: #f8fafc; padding: 12px; border-radius: 14px; text-align: center; border: 1px solid #f1f5f9; }
         .data-label { font-size: 0.75rem; color: var(--text-gray); display: block; margin-bottom: 5px; font-weight: 600; }
         .data-val { font-weight: 800; font-size: 0.95rem; color: var(--primary); }
-
         #load-more {
             display: none; width: 100%; max-width: 260px; margin: 30px auto 10px auto; 
             background: #fff; color: var(--primary); border: 2px solid var(--primary);
             padding: 14px; border-radius: 16px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--transition); text-align: center;
         }
         #load-more:hover { background: var(--primary); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30, 58, 138, 0.1); }
-
         /* ================= التذييل / الفوتر الاحترافي ================= */
         footer {
             background: #ffffff; text-align: center; padding: 20px; font-size: 0.85rem; color: var(--text-gray); font-weight: 600; border-top: 1px solid #e2e8f0;
         }
-
     </style>
 </head>
 <body>
-
     <div id="main-view">
         <header class="curved-header">
             <h1 class="header-title">نتائج الامتحانات الوطنية</h1>
@@ -292,18 +256,15 @@
                 <button class="exam-btn" onclick="changeExam('bac', this)">الباكالوريا 2026</button>
             </div>
         </header>
-
         <div class="search-container">
             <input type="text" class="search-input" id="search-input" placeholder="ابحث بالاسم، الرقم، المدرسة، المركز أو الولاية..." oninput="handleSearch()">
             <div class="suggestions-box" id="suggestions-box"></div>
         </div>
-
         <main>
             <div id="results-container"></div>
             <button id="load-more" onclick="loadMoreData()">عرض المزيد من النتائج</button>
         </main>
     </div>
-
     <div id="details-page">
         <div class="details-container">
             <div class="details-header-bar">
@@ -314,11 +275,9 @@
             <div class="full-data-grid" id="page-details-grid"></div>
         </div>
     </div>
-
     <footer>
         جميع الحقوق محفوظة © مراجعي
     </footer>
-
     <script>
         // الروابط فارغة الآن وجاهزة لاستقبال الروابط الجديدة فور صدورها
         const DATA_URLS = {
@@ -326,7 +285,6 @@
             brevet: "",  
             bac: ""      
         };
-
         let appState = {
             currentData: [],
             filteredData: [],
@@ -336,9 +294,7 @@
             itemsPerPage: 40,
             currentExam: 'concour' 
         };
-
         document.addEventListener('DOMContentLoaded', () => { fetchData('concour'); });
-
         function changeExam(type, btnElement) {
             document.querySelectorAll('.exam-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
@@ -347,7 +303,6 @@
             appState.currentExam = type;
             fetchData(type);
         }
-
         function showSkeletonLoading() {
             const container = document.getElementById('results-container');
             document.getElementById('load-more').style.display = 'none';
@@ -356,7 +311,6 @@
                 container.innerHTML += `<div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>`;
             }
         }
-
         function showComingSoonMsg() {
             const container = document.getElementById('results-container');
             document.getElementById('load-more').style.display = 'none';
@@ -367,20 +321,17 @@
                     <p class="status-desc">لم تتوفر الروابط الرسمية لهذه المسابقة بعد. سيتم عرض وإدراج النتائج هنا فور توفر البيانات مباشرة.</p>
                 </div>`;
         }
-
         async function fetchData(examType) {
             // التحقق الفوري إذا كان الرابط فارغاً لمنع محاولة السحب الوهمية
             if (!DATA_URLS[examType] || DATA_URLS[examType].trim() === "") {
                 showComingSoonMsg();
                 return;
             }
-
             showSkeletonLoading();
             try {
                 const response = await fetch(DATA_URLS[examType]);
                 if (!response.ok) throw new Error();
                 const csvText = await response.text();
-
                 Papa.parse(csvText, {
                     header: true, skipEmptyLines: true,
                     complete: function(results) {
@@ -392,7 +343,6 @@
                 });
             } catch (error) { showErrorMsg(); }
         }
-
         function showErrorMsg() {
             document.getElementById('results-container').innerHTML = `
                 <div class="status-notice-box" style="border-color: var(--danger);">
@@ -401,12 +351,10 @@
                     <p class="status-desc">حدث خطأ أثناء محاولة الاتصال بالخادم. يرجى التأكد من جودة الإنترنت وإعادة المحاولة.</p>
                 </div>`;
         }
-
         function normalizeArabic(text) {
             if (!text) return "";
             return text.toString().toLowerCase().replace(/[أإآأ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652]/g, ""); 
         }
-
         function getMatchingKey(keysArray, possibleKeys) {
             for (let pk of possibleKeys) {
                 const exactMatch = keysArray.find(k => k.trim().toLowerCase() === pk.toLowerCase());
@@ -418,22 +366,18 @@
             }
             return undefined; 
         }
-
         function setupKeysAndSort(data) {
             appState.keys.res = getMatchingKey(appState.columns, ['decision_bepc', 'decision', 'décision', 'النتيجة', 'القرار', 'resultat', 'ملاحظة', 'قرار']);
             appState.keys.avg = getMatchingKey(appState.columns, ['mgex', 'moyenne_bepc', 'moy bac_session', 'moyenne', 'moy', 'المعدل', 'المجموع', 'note']);
             appState.keys.name = getMatchingKey(appState.columns, ['nom', 'name', 'اسم', 'الاسم']);
             appState.keys.num = getMatchingKey(appState.columns, ['numero', 'num', 'رقم', 'المترشح']);
             appState.keys.center = getMatchingKey(appState.columns, ['centre', 'ecole', 'etablissement', 'مركز', 'مدرسة', 'مؤسسة']);
-
             const resKey = appState.keys.res;
             const avgKey = appState.keys.avg;
             const nameKey = appState.keys.name;
-
             data.forEach(student => {
                 let resultStr = resKey && student[resKey] ? student[resKey].toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-                let avgStr = avgKey && student[avgKey] ? student[avgKey].toString().trim() : "";
-                
+                let avgStr = avgKey && student[avgKey] ? student[avgKey].toString().trim() : "";        
                 let avg = -1;
                 if (avgStr !== "") {
                     let parsedAvg = parseFloat(avgStr.replace(',', '.'));
@@ -443,9 +387,7 @@
                         if (numMatch) avg = parseFloat(numMatch[0]);
                     }
                 }
-
                 let status = 'fail';
-
                 if (resultStr.includes('غائب') || resultStr.includes('abs') || resultStr.includes('غياب')) {
                     status = 'absent';
                 } else if (resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل') || resultStr.includes('مقبول')) {
@@ -460,39 +402,31 @@
                     else if (avg >= 0) status = 'fail';
                     else status = 'absent';
                 }
-
                 student._avg = avg;
                 student._status = status;
                 student._resStr = student[resKey] || "";
                 student._avgStr = avgStr;
-                student._nameStr = nameKey && student[nameKey] ? student[nameKey].toString() : "";
-                
+                student._nameStr = nameKey && student[nameKey] ? student[nameKey].toString() : "";    
                 student._searchStr = normalizeArabic(appState.columns.map(col => student[col] || "").join(" "));
             });
-
             data.sort((a, b) => {
                 if (b._avg !== a._avg) {
                     return b._avg - a._avg; 
                 }
                 return a._nameStr.localeCompare(b._nameStr, 'ar');
             });
-
             appState.currentData = data;
             appState.filteredData = data;
             appState.currentPage = 1;
             renderResults(true);
         }
-
         function renderResults(reset = false) {
             const container = document.getElementById('results-container');
-            const loadMoreBtn = document.getElementById('load-more');
-            
+            const loadMoreBtn = document.getElementById('load-more');          
             if (reset) { container.innerHTML = ""; appState.currentPage = 1; }
-
             const startIndex = (appState.currentPage - 1) * appState.itemsPerPage;
             const endIndex = startIndex + appState.itemsPerPage;
-            const itemsToRender = appState.filteredData.slice(startIndex, endIndex);
-
+            const itemsToRender = appState.filteredData.slice(startIndex, endIndex)            
             if (itemsToRender.length === 0 && reset) {
                 container.innerHTML = `
                     <div class="status-notice-box" style="border: none;">
@@ -502,21 +436,16 @@
                     </div>`;
                 loadMoreBtn.style.display = 'none'; return;
             }
-
             itemsToRender.forEach(student => {
                 const name = student._nameStr || "غير متوفر";
                 const num = appState.keys.num && student[appState.keys.num] ? student[appState.keys.num] : "غير متوفر";
                 const center = appState.keys.center && student[appState.keys.center] ? student[appState.keys.center] : "غير مدرج";
-
                 const status = student._status;
                 let avgStr = student._avgStr;
-                if (student._avg === -1 && avgStr === "") avgStr = "غير مدرج";
-                
+                if (student._avg === -1 && avgStr === "") avgStr = "غير مدرج";              
                 let resultStr = student._resStr;
-
                 let badgeClass = 'badge-success';
                 let badgeText = resultStr || 'ناجح';
-
                 if (status === 'fail') {
                     badgeClass = 'badge-danger'; badgeText = resultStr || 'راسب';
                 } else if (status === 'session') {
@@ -524,11 +453,9 @@
                 } else if (status === 'absent') {
                     badgeClass = 'badge-warning'; badgeText = resultStr || 'غائب';
                 }
-
                 const card = document.createElement('div');
                 card.className = 'student-card';
-                card.onclick = () => openDetailsPage(student);
-                
+                card.onclick = () => openDetailsPage(student);            
                 card.innerHTML = `
                     <div class="card-header">
                         <div>
@@ -544,24 +471,18 @@
                 `;
                 container.appendChild(card);
             });
-
             if (endIndex < appState.filteredData.length) loadMoreBtn.style.display = 'block';
             else loadMoreBtn.style.display = 'none';
         }
-
         function loadMoreData() { appState.currentPage++; renderResults(false); }
-
         function handleSearch() {
             const query = normalizeArabic(document.getElementById('search-input').value.trim());
-            const toggBox = document.getElementById('suggestions-box');
-            
+            const toggBox = document.getElementById('suggestions-box');           
             if (!query) {
                 appState.filteredData = appState.currentData;
                 toggBox.style.display = 'none'; renderResults(true); return;
             }
-
             appState.filteredData = appState.currentData.filter(student => student._searchStr.includes(query));
-
             let suggestionsSet = new Set();
             appState.filteredData.forEach(student => {
                 appState.columns.forEach(col => {
@@ -569,37 +490,30 @@
                     if (val && normalizeArabic(val).includes(query)) suggestionsSet.add(val.toString().trim());
                 });
             });
-
             const suggestionsArr = Array.from(suggestionsSet).slice(0, 6);
             if (suggestionsArr.length > 0) {
                 toggBox.innerHTML = suggestionsArr.map(s => `<div class="suggestion-item" onclick="selectSuggestion('${s.replace(/'/g, "\\'")}')">${s}</div>`).join('');
                 toggBox.style.display = 'block';
             } else toggBox.style.display = 'none';
-
             renderResults(true);
         }
-
         function selectSuggestion(value) {
             document.getElementById('search-input').value = value;
             document.getElementById('suggestions-box').style.display = 'none';
             handleSearch(); 
         }
-
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-container')) document.getElementById('suggestions-box').style.display = 'none';
         });
-
         function openDetailsPage(student) {
             localStorage.setItem('saved_scroll_y', window.scrollY || document.documentElement.scrollTop);
             document.getElementById('main-view').style.display = 'none';
             document.getElementById('details-page').style.display = 'block';
-            window.scrollTo(0, 0); 
-            
+            window.scrollTo(0, 0);           
             const grid = document.getElementById('page-details-grid');
             document.getElementById('page-name').innerText = student._nameStr || "بيانات الطالب التفصيلية";
             const msgContainer = document.getElementById('motivation-container');
-            const status = student._status;
-            
+            const status = student._status;          
             if (status === 'pass') {
                 msgContainer.innerHTML = `<div class="motivation-msg msg-success">مبارك النجاح الباهر! 🌟 لقد تكللت جهودك ومثابرتك بالتميز المستحق.</div>`;
                 setTimeout(launchCelebration, 150);
@@ -610,7 +524,6 @@
             } else if (status === 'absent') {
                 msgContainer.innerHTML = `<div class="motivation-msg msg-absent">الغياب عذر مؤقت، نتمنى أن يكون المانع خيراً وعوضك الله بالتوفيق والنجاح الدائم.</div>`;
             }
-
             grid.innerHTML = "";
             appState.columns.forEach(col => {
                 if (student[col] !== undefined && student[col] !== null && student[col].toString().trim() !== "") {
@@ -618,30 +531,24 @@
                 }
             });
         }
-
         function closeDetailsPage() {
             document.getElementById('details-page').style.display = 'none';
-            document.getElementById('main-view').style.display = 'block';
-            
+            document.getElementById('main-view').style.display = 'block';          
             const savedScroll = localStorage.getItem('saved_scroll_y');
             if (savedScroll) {
                 setTimeout(() => { window.scrollTo({ top: parseInt(savedScroll), behavior: 'auto' }); }, 30);
             }
         }
-
         function launchCelebration() {
             if (typeof confetti !== 'function') return; 
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
-
             function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
             var interval = setInterval(function() {
                 var timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 50 * (timeLeft / duration);
-                
+                var particleCount = 50 * (timeLeft / duration);            
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
