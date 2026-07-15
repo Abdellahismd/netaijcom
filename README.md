@@ -1,30 +1,36 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نتائج الامتحانات الوطنية 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        /* ================= المتغيرات والألوان المحسّنة ================= */
-       :root {
+        /* ================= المتغيرات والألوان ================= */
+        :root {
             --primary: #1e3a8a;
             --primary-light: #3b82f6;
-            --primary-dark: #1e293b;
             --accent: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             --info: #0ea5e9;
-            --bg-main: #f8fafc;
-            --text-dark: #0f172a;
+            --gold: #fbbf24;
+            --silver: #9ca3af;
+            --bronze: #b45309;
+            --bg-main: #f4f7f6;
+            --text-dark: #1e293b;
             --text-gray: #64748b;
             --card-bg: #ffffff;
             --glass-bg: rgba(255, 255, 255, 0.9);
-            --shadow-soft: 0 10px 30px rgba(30, 58, 138, 0.04);
-            --shadow-hover: 0 20px 40px rgba(30, 58, 138, 0.08);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --transition: all 0.25s ease;
         }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -32,329 +38,424 @@
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
+
         body {
             background-color: var(--bg-main);
             color: var(--text-dark);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             overflow-x: hidden;
-            scrollbar-width: none;  
         }
-        ::-webkit-scrollbar { display: none; }
+        ::-webkit-scrollbar { display: none; } /* إخفاء شريط التمرير */
 
-        /* ================= الهيدر المنحني الفخم ================= */
-  .curved-header {
-            background: linear-gradient(135deg, var(--primary), #0f172a);
-            border-radius: 0 0 50px 50px;
-            padding: 40px 20px 70px 20px;
+        /* ================= الهيدر والتبويبات ================= */
+        .curved-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 0 0 35px 35px;
+            padding: 20px 15px 45px 15px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(30, 58, 138, 0.15);
-            position: relative;
-        }
-  .header-title {
-            color: #ffffff;
-            font-size: 1.4rem; 
-            font-weight: 800;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
             margin-bottom: 25px;
-            letter-spacing: -0.5px;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        /* ================= أزرار اختيار المسابقة ================= */
+
+        .header-title {
+            color: #ffffff;
+            font-size: 1.2rem; 
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
         .exam-tabs {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            max-width: 480px;
+            gap: 8px;
+            max-width: 500px;
             margin: 0 auto;
         }
+
         .exam-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.9);
-            padding: 12px 20px;
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 12px;
             font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
-            backdrop-filter: blur(12px);
             transition: var(--transition);
         }
-        .exam-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
+
         .exam-btn.active {
             background: #ffffff;
             color: var(--primary);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             transform: scale(1.02);
-            border-color: #ffffff;
+            border: none;
         }
-        /* ================= مربع البحث العائم ================= */
-        .search-container {
-            max-width: 520px;
-            width: calc(100% - 30px);
-            margin: -30px auto 25px auto;
+
+        /* ================= أدوات الفلترة والبحث ================= */
+        .controls-container {
+            max-width: 1000px;
+            margin: -35px auto 20px auto;
+            padding: 0 15px;
             position: relative;
             z-index: 10;
         }
+
+        .dropdown-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: var(--card-bg);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            outline: none;
+            box-shadow: var(--shadow-soft);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231e3a8a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: left 10px center;
+            background-size: 10px auto;
+        }
+        .custom-select:disabled { background-color: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
         .search-input {
             width: 100%;
-            padding: 16px 24px;
-            border-radius: 20px;
-            border: 1px solid rgba(30, 58, 138, 0.05);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
             box-shadow: var(--shadow-soft);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--text-dark);
             outline: none;
             transition: var(--transition);
-            text-align: center;
         }
-        .search-input:focus {
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-        }
-        .suggestions-box {
-            position: absolute;
-            top: 100%; left: 0; right: 0;
+        .search-input:focus { border-color: var(--primary-light); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15); }
+
+        .toggles-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
             background: var(--card-bg);
-            border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            max-height: 220px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-            margin-top: 10px;
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-        .suggestion-item {
-            padding: 14px 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.02);
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-dark);
-            font-weight: 600;
-            transition: background 0.2s;
-            text-align: right;
-        }
-        .suggestion-item:last-child { border-bottom: none; }
-        .suggestion-item:hover { background: #f1f5f9; color: var(--primary); }
-        /* ================= بطاقات النتائج المحسّنة ================= */
-        main { padding: 0 15px 40px 15px; flex: 1; }       
-        #results-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .student-card {
-            background: var(--card-bg);
-            padding: 22px;
-            border-radius: 20px;
-            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 12px;
             box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(0,0,0,0.01);
-            transition: var(--transition);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        .toggle-label input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+        /* ================= قسم الأوائل ================= */
+        .section-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 25px 0 15px 0;
             position: relative;
         }
-        .student-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-hover);
-            border-color: rgba(5b, 130, 246, 0.2);
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+            margin: 5px auto 0 auto;
+            border-radius: 5px;
         }
-        .card-header {
+
+        .top-10-scroll {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #e2e8f0;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 15px 20px 15px;
+            scroll-snap-type: x mandatory;
         }
-        .student-name { font-size: 1.05rem; font-weight: 800; color: #1e293b; line-height: 1.4; }
-        .student-number { font-size: 0.8rem; color: var(--text-gray); margin-top: 5px; font-weight: 600; }
-        .result-badge {
-            padding: 6px 14px;
-            border-radius: 25px;
+        
+        .top-card {
+            min-width: 260px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+            scroll-snap-align: center;
+            position: relative;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .top-card:hover { transform: translateY(-5px); }
+
+        .top-rank-badge {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .rank-1 { background: var(--gold); }
+        .rank-2 { background: var(--silver); }
+        .rank-3 { background: var(--bronze); }
+        .rank-other { background: var(--primary-light); }
+
+        .top-name { font-weight: 800; color: var(--primary); font-size: 1rem; margin-top: 15px; line-height: 1.3; }
+        .top-score { font-size: 1.1rem; font-weight: 800; color: var(--accent); margin: 5px 0; }
+        .top-details { font-size: 0.75rem; color: var(--text-gray); line-height: 1.5; }
+        .top-details span { color: var(--text-dark); font-weight: 700; }
+
+        /* ================= بطاقات النتائج العامة ================= */
+        main { padding: 0 15px 30px 15px; max-width: 1200px; margin: 0 auto; }
+        
+        #results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .student-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .card-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        
+        .general-rank {
+            background: var(--bg-main);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 8px;
             font-size: 0.75rem;
             font-weight: 800;
-            white-space: nowrap;
+            border: 1px solid rgba(0,0,0,0.05);
         }
-        .badge-success { background: rgba(16, 185, 129, 0.12); color: var(--accent); }
-        .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
-        .badge-warning { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
-        .badge-info { background: rgba(14, 165, 233, 0.12); color: var(--info); }
-        .card-details p { margin: 6px 0; font-size: 0.85rem; color: var(--text-gray); font-weight: 500; }
-        .card-details span { font-weight: 700; color: var(--text-dark); }
-        /* ================= هيدر وواجهة الحالات الخاصة والتحميل المعلق ================= */
-        .status-notice-box {
-            grid-column: 1/-1; text-align: center; padding: 45px 25px; background: #fff; border-radius: 24px;
-            box-shadow: var(--shadow-soft); border: 1px dashed rgba(30, 58, 138, 0.15);
-            animation: fadeIn 0.4s ease;
-        }
-        .status-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
-        .status-title { font-weight: 800; font-size: 1.25rem; color: var(--primary); margin-bottom: 10px; }
-        .status-desc { color: var(--text-gray); font-size: 0.9rem; line-height: 1.6; }
-        /* ================= سكيلتون التحميل اللطيف ================= */
+
+        .student-name { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); line-height: 1.4; margin-bottom: 4px; word-wrap: break-word;}
+        .student-number { font-size: 0.75rem; color: var(--text-gray); }
+
+        .card-divider { height: 1px; background: rgba(0,0,0,0.05); margin: 10px 0; }
+
+        .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-meta { font-size: 0.75rem; color: var(--text-gray); line-height: 1.6; }
+        .card-meta span { font-weight: 700; color: var(--text-dark); }
+        
+        .result-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--accent); }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-info { background: rgba(14, 165, 233, 0.1); color: var(--info); }
+
+        /* ================= حالة التحميل ================= */
         .skeleton-card {
-            background: #fff; padding: 22px; border-radius: 20px; box-shadow: var(--shadow-soft); height: 140px; position: relative; overflow: hidden;
+            background: #fff; padding: 15px; border-radius: 14px;
+            box-shadow: var(--shadow-soft); height: 130px; position: relative; overflow: hidden;
         }
         .skeleton-card::after {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: loading 1.5s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: loading 1.5s infinite;
         }
         @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .skeleton-line { height: 11px; background: #f1f5f9; border-radius: 6px; margin-bottom: 14px; }
-        .skeleton-line.short { width: 50%; }
-        .skeleton-line.title { height: 18px; width: 75%; margin-bottom: 22px; }
-        /* ================= صفحة التفاصيل المستقلة الفخمة ================= */
+        .skeleton-line { height: 8px; background: #e2e8f0; border-radius: 4px; margin-bottom: 10px; }
+
+        /* ================= صفحة التفاصيل ================= */
         #details-page {
-            display: none; padding: 30px 15px; max-width: 650px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }     
+            display: none; padding: 20px 15px; max-width: 700px; margin: 0 auto;
+            animation: fadeIn 0.3s ease;
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .details-container { background: var(--card-bg); border-radius: 28px; padding: 30px 25px; box-shadow: var(--shadow-hover); }
-        .details-header-bar {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px dashed #f1f5f9; padding-bottom: 20px;
-        }
-        .details-header-bar h3 { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-align: center; flex-grow: 1; padding: 0 10px; }
-        .btn-close-page {
-            background: #f1f5f9; border: none; color: var(--text-dark); padding: 10px 20px; border-radius: 14px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: var(--transition);
-        }
-        .btn-close-page:hover { background: #e2e8f0; transform: scale(1.03); }
-        .motivation-msg { padding: 18px; border-radius: 18px; margin: 20px 0; text-align: center; line-height: 1.7; font-size: 0.95rem; font-weight: 700; }
-        .msg-success { background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.03)); color: #047857; border: 1px solid rgba(16, 185, 129, 0.15); }
-        .msg-fail { background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.03)); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.15); }
-        .msg-session { background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(14, 165, 233, 0.03)); color: #0369a1; border: 1px solid rgba(14, 165, 233, 0.15); }
-        .msg-absent { background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.03)); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.15); }
-        .full-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .data-item { background: #f8fafc; padding: 12px; border-radius: 14px; text-align: center; border: 1px solid #f1f5f9; }
-        .data-label { font-size: 0.75rem; color: var(--text-gray); display: block; margin-bottom: 5px; font-weight: 600; }
-        .data-val { font-weight: 800; font-size: 0.95rem; color: var(--primary); }
+
+        .details-container { background: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-soft); }
+        .details-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px dashed rgba(0,0,0,0.05); padding-bottom: 15px; }
+        .details-header-bar h3 { font-size: 1.1rem; font-weight: 800; color: var(--primary); text-align: center; flex-grow: 1; }
+        .btn-close-page { background: #f1f5f9; border: none; color: var(--text-dark); padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer; }
+
+        .full-data-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .data-row { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-main); border-radius: 10px; font-size: 0.9rem; }
+        .data-label { color: var(--text-gray); font-weight: 700; width: 40%; }
+        .data-val { color: var(--text-dark); font-weight: 800; width: 60%; text-align: left; word-wrap: break-word; }
+
         #load-more {
-            display: none; width: 100%; max-width: 260px; margin: 30px auto 10px auto; 
+            display: none; width: 100%; max-width: 250px; margin: 25px auto; 
             background: #fff; color: var(--primary); border: 2px solid var(--primary);
-            padding: 14px; border-radius: 16px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--transition); text-align: center;
+            padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--transition); text-align: center;
         }
-        #load-more:hover { background: var(--primary); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30, 58, 138, 0.1); }
-        /* ================= التذييل / الفوتر الاحترافي ================= */
-        footer {
-            background: #ffffff; text-align: center; padding: 20px; font-size: 0.85rem; color: var(--text-gray); font-weight: 600; border-top: 1px solid #e2e8f0;
-        }
+        #load-more:hover { background: var(--primary); color: #fff; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
     <div id="main-view">
         <header class="curved-header">
-            <h1 class="header-title">نتائج الامتحانات الوطنية</h1>
+            <h1 class="header-title">نتائج الامتحانات الوطنية الموريتانية</h1>
             <div class="exam-tabs">
-                <button class="exam-btn active" onclick="changeExam('concour', this)">مسابقة دخول السنة الأولى الإعدادية 2026</button>
-                <button class="exam-btn" onclick="changeExam('brevet', this)">شهادة الدروس الإعدادية 2026</button>
-                <button class="exam-btn" onclick="changeExam('bac', this)">الباكالوريا 2026</button>
+                <button class="exam-btn active" onclick="changeExam('concour', this)">مسابقة دخول الإعدادية</button>
             </div>
         </header>
-        <div class="search-container">
-            <input type="text" class="search-input" id="search-input" placeholder="ابحث بالاسم، الرقم، المدرسة، المركز أو الولاية..." oninput="handleSearch()">
-            <div class="suggestions-box" id="suggestions-box"></div>
+
+        <div class="controls-container">
+            <div class="dropdown-filters">
+                <select id="filter-wilaya" class="custom-select" onchange="onWilayaChange()">
+                    <option value="">كل الولايات</option>
+                </select>
+                <select id="filter-center" class="custom-select" onchange="onCenterChange()" disabled>
+                    <option value="">كل المقاطعات/المراكز</option>
+                </select>
+                <select id="filter-school" class="custom-select" onchange="applyFilters()" disabled>
+                    <option value="">كل المدارس</option>
+                </select>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" id="search-input" placeholder="ابحث برقم المترشح، الاسم، المدرسة، المركز..." oninput="handleSearch()">
+            </div>
+
+            <div class="toggles-container">
+                <label class="toggle-label">
+                    <input type="checkbox" id="pass-only-toggle" onchange="applyFilters()">
+                    عرض الناجحين فقط
+                </label>
+            </div>
         </div>
+
+        <div id="top-10-section" class="hidden">
+            <h2 class="section-title" id="top-10-title">العشرة الأوائل</h2>
+            <div class="top-10-scroll" id="top-10-container"></div>
+        </div>
+
         <main>
             <div id="results-container"></div>
-            <button id="load-more" onclick="loadMoreData()">عرض المزيد من النتائج</button>
+            <button id="load-more" onclick="loadMoreData()">عرض المزيد</button>
         </main>
     </div>
+
     <div id="details-page">
         <div class="details-container">
             <div class="details-header-bar">
-                <h3 id="page-name">اسم الطالب</h3>
-                <button class="btn-close-page" onclick="closeDetailsPage()">رجوع للكل</button>
+                <h3 id="page-name">التفاصيل الكاملة</h3>
+                <button class="btn-close-page" onclick="closeDetailsPage()">رجوع</button>
             </div>
-            <div id="motivation-container"></div>
-            <div class="full-data-grid" id="page-details-grid"></div>
+            <div id="motivation-container" style="text-align: center; margin-bottom: 15px; font-weight: 800; font-size: 1.1rem;"></div>
+            <div class="full-data-list" id="page-details-list"></div>
         </div>
     </div>
-    <footer>
-        جميع الحقوق محفوظة © مراجعي
-    </footer>
+
     <script>
-        // الروابط فارغة الآن وجاهزة لاستقبال الروابط الجديدة فور صدورها
+        // تم الإبقاء على رابط الكونكور فقط كما طلبت
         const DATA_URLS = {
-            concour: "", 
-            brevet: "",  
-            bac: ""      
+            concour: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTlJq68a973gbhoAwubzYAcdrMx1VVg3d14HH0aTZw6TBIRwU0FnVwU6fjCvHzxBg/pub?gid=361235812&single=true&output=csv"
         };
+
         let appState = {
-            currentData: [],
-            filteredData: [],
-            columns: [],
-            keys: {},
+            currentData: [],     
+            filteredData: [],    
+            columns: [],         
+            keys: {},            
             currentPage: 1,
             itemsPerPage: 40,
-            currentExam: 'concour' 
+            currentExam: 'concour'
         };
+
         document.addEventListener('DOMContentLoaded', () => { fetchData('concour'); });
+
         function changeExam(type, btnElement) {
             document.querySelectorAll('.exam-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
+            
             document.getElementById('search-input').value = '';
-            document.getElementById('suggestions-box').style.display = 'none';
+            document.getElementById('pass-only-toggle').checked = false;
+            resetDropdowns();
+
             appState.currentExam = type;
             fetchData(type);
         }
+
         function showSkeletonLoading() {
             const container = document.getElementById('results-container');
             document.getElementById('load-more').style.display = 'none';
+            document.getElementById('top-10-section').classList.add('hidden');
             container.innerHTML = '';
-            for(let i=0; i<6; i++){
-                container.innerHTML += `<div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>`;
+            for(let i=0; i<8; i++){
+                container.innerHTML += `<div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>`;
             }
         }
-        function showComingSoonMsg() {
-            const container = document.getElementById('results-container');
-            document.getElementById('load-more').style.display = 'none';
-            container.innerHTML = `
-                <div class="status-notice-box">
-                    <span class="status-icon">⏳</span>
-                    <div class="status-title">الروابط الجديدة قيد التحديث</div>
-                    <p class="status-desc">لم تتوفر الروابط الرسمية لهذه المسابقة بعد. سيتم عرض وإدراج النتائج هنا فور توفر البيانات مباشرة.</p>
-                </div>`;
-        }
+
         async function fetchData(examType) {
-            // التحقق الفوري إذا كان الرابط فارغاً لمنع محاولة السحب الوهمية
-            if (!DATA_URLS[examType] || DATA_URLS[examType].trim() === "") {
-                showComingSoonMsg();
-                return;
-            }
             showSkeletonLoading();
             try {
                 const response = await fetch(DATA_URLS[examType]);
                 if (!response.ok) throw new Error();
                 const csvText = await response.text();
+
                 Papa.parse(csvText, {
-                    header: true, skipEmptyLines: true,
+                    header: true, 
+                    skipEmptyLines: true,
                     complete: function(results) {
                         if (results.data && results.data.length > 0) {
                             appState.columns = results.meta.fields || Object.keys(results.data[0]);
-                            setupKeysAndSort(results.data); 
+                            setupKeysAndParse(results.data); 
                         }
-                    }, error: () => showErrorMsg()
+                    }, 
+                    error: () => showErrorMsg()
                 });
             } catch (error) { showErrorMsg(); }
         }
+
         function showErrorMsg() {
-            document.getElementById('results-container').innerHTML = `
-                <div class="status-notice-box" style="border-color: var(--danger);">
-                    <span class="status-icon" style="color:var(--danger)">⚠️</span>
-                    <div class="status-title" style="color:var(--danger)">تعذر جلب البيانات</div>
-                    <p class="status-desc">حدث خطأ أثناء محاولة الاتصال بالخادم. يرجى التأكد من جودة الإنترنت وإعادة المحاولة.</p>
-                </div>`;
+            document.getElementById('results-container').innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--danger); font-weight: bold; background: #fff; border-radius: 12px;">تعذر سحب النتائج حالياً، يرجى التحقق من اتصال الإنترنت.</div>`;
         }
+
         function normalizeArabic(text) {
             if (!text) return "";
+            // إزالة التشكيل البسيط وتوحيد الهمزات بشكل سريع
             return text.toString().toLowerCase().replace(/[أإآأ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[\u064B-\u0652]/g, ""); 
         }
+
         function getMatchingKey(keysArray, possibleKeys) {
             for (let pk of possibleKeys) {
                 const exactMatch = keysArray.find(k => k.trim().toLowerCase() === pk.toLowerCase());
@@ -366,193 +467,302 @@
             }
             return undefined; 
         }
-        function setupKeysAndSort(data) {
-            appState.keys.res = getMatchingKey(appState.columns, ['decision_bepc', 'decision', 'décision', 'النتيجة', 'القرار', 'resultat', 'ملاحظة', 'قرار']);
-            appState.keys.avg = getMatchingKey(appState.columns, ['mgex', 'moyenne_bepc', 'moy bac_session', 'moyenne', 'moy', 'المعدل', 'المجموع', 'note']);
+
+        function setupKeysAndParse(data) {
+            appState.keys.res = getMatchingKey(appState.columns, ['decision', 'décision', 'النتيجة', 'القرار', 'resultat', 'ملاحظة', 'قرار']);
+            appState.keys.score = getMatchingKey(appState.columns, ['total', 'مجموع', 'mgex', 'moyenne', 'moy', 'المعدل', 'note', 'points']);
             appState.keys.name = getMatchingKey(appState.columns, ['nom', 'name', 'اسم', 'الاسم']);
             appState.keys.num = getMatchingKey(appState.columns, ['numero', 'num', 'رقم', 'المترشح']);
-            appState.keys.center = getMatchingKey(appState.columns, ['centre', 'ecole', 'etablissement', 'مركز', 'مدرسة', 'مؤسسة']);
-            const resKey = appState.keys.res;
-            const avgKey = appState.keys.avg;
-            const nameKey = appState.keys.name;
+            
+            appState.keys.wilaya = getMatchingKey(appState.columns, ['wilaya', 'ولاية', 'region', 'dren']);
+            appState.keys.center = getMatchingKey(appState.columns, ['centre', 'مركز', 'moughataa', 'مقاطعة']);
+            appState.keys.school = getMatchingKey(appState.columns, ['ecole', 'etablissement', 'مدرسة', 'مؤسسة']);
+
             data.forEach(student => {
-                let resultStr = resKey && student[resKey] ? student[resKey].toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-                let avgStr = avgKey && student[avgKey] ? student[avgKey].toString().trim() : "";        
-                let avg = -1;
-                if (avgStr !== "") {
-                    let parsedAvg = parseFloat(avgStr.replace(',', '.'));
-                    if (!isNaN(parsedAvg)) avg = parsedAvg;
-                    else {
-                        const numMatch = avgStr.match(/[\d\.]+/);
-                        if (numMatch) avg = parseFloat(numMatch[0]);
-                    }
+                // تسريع المعالجة بتجنب الدوال الثقيلة للـ regex إلا للضرورة
+                let resultStr = appState.keys.res && student[appState.keys.res] ? student[appState.keys.res].toString().trim().toLowerCase() : "";
+                let scoreStr = appState.keys.score && student[appState.keys.score] ? student[appState.keys.score].toString().trim() : "";
+                
+                let scoreVal = -1;
+                if (scoreStr !== "") {
+                    let cleanStr = scoreStr.replace(/[^\d.,]/g, '').replace(',', '.');
+                    let parsedScore = parseFloat(cleanStr);
+                    if (!isNaN(parsedScore)) scoreVal = parsedScore;
                 }
+
                 let status = 'fail';
-                if (resultStr.includes('غائب') || resultStr.includes('abs') || resultStr.includes('غياب')) {
+                if (resultStr.includes('غائب') || resultStr.includes('abs')) {
                     status = 'absent';
-                } else if (resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل') || resultStr.includes('مقبول')) {
+                } else if (resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل')) {
                     status = 'pass';
                 } else if (resultStr.includes('دورة') || resultStr.includes('session') || resultStr.includes('تكميلية')) {
-                    status = 'session'; 
-                } else if (resultStr.includes('راسب') || resultStr.includes('ajourne') || resultStr.includes('echec') || resultStr.includes('مقصى') || resultStr.includes('مرفوض') || resultStr.includes('ضعيف')) {
+                    status = 'session';
+                } else if (resultStr.includes('راسب') || resultStr.includes('ajourne') || resultStr.includes('echec') || resultStr.includes('مقصى')) {
                     status = 'fail';
                 } else {
-                    if (avg >= 10) status = 'pass';
-                    else if (avg >= 8 && appState.currentExam === 'bac') status = 'session'; 
-                    else if (avg >= 0) status = 'fail';
-                    else status = 'absent';
+                    if (appState.currentExam === 'concour') {
+                        if (scoreVal >= 80) status = 'pass'; else if (scoreVal >= 0) status = 'fail'; else status = 'absent';
+                    }
                 }
-                student._avg = avg;
+
+                student._scoreVal = scoreVal;
+                student._scoreStr = scoreStr;
                 student._status = status;
-                student._resStr = student[resKey] || "";
-                student._avgStr = avgStr;
-                student._nameStr = nameKey && student[nameKey] ? student[nameKey].toString() : "";    
-                student._searchStr = normalizeArabic(appState.columns.map(col => student[col] || "").join(" "));
+                student._resStr = student[appState.keys.res] || "";
+                student._nameStr = appState.keys.name && student[appState.keys.name] ? student[appState.keys.name].toString() : "بدون اسم";
+                
+                // تم تحسين الأداء بجمع بيانات محددة للبحث بدلاً من كل الأعمدة
+                const searchData = [
+                    student[appState.keys.name], 
+                    student[appState.keys.num], 
+                    student[appState.keys.school], 
+                    student[appState.keys.center]
+                ].join(" ");
+                student._searchStr = normalizeArabic(searchData);
             });
-            data.sort((a, b) => {
-                if (b._avg !== a._avg) {
-                    return b._avg - a._avg; 
-                }
+
+            appState.currentData = data;
+            initDropdowns();
+            applyFilters();
+        }
+
+        function resetDropdowns() {
+            document.getElementById('filter-wilaya').innerHTML = '<option value="">كل الولايات</option>';
+            document.getElementById('filter-center').innerHTML = '<option value="">كل المقاطعات/المراكز</option>';
+            document.getElementById('filter-center').disabled = true;
+            document.getElementById('filter-school').innerHTML = '<option value="">كل المدارس</option>';
+            document.getElementById('filter-school').disabled = true;
+        }
+
+        function populateDropdown(selectId, optionsSet) {
+            const select = document.getElementById(selectId);
+            const defaultOption = select.options[0].outerHTML;
+            if (optionsSet.size === 0) {
+                select.innerHTML = defaultOption;
+                select.disabled = true;
+                return;
+            }
+            select.disabled = false;
+            let optionsHTML = defaultOption;
+            Array.from(optionsSet).sort().forEach(val => {
+                if (val && val.trim() !== "") optionsHTML += `<option value="${val}">${val}</option>`;
+            });
+            select.innerHTML = optionsHTML;
+        }
+
+        function initDropdowns() {
+            resetDropdowns();
+            if (appState.keys.wilaya) {
+                const wilayas = new Set(appState.currentData.map(s => s[appState.keys.wilaya]).filter(Boolean));
+                populateDropdown('filter-wilaya', wilayas);
+            }
+        }
+
+        function onWilayaChange() {
+            const selectedWilaya = document.getElementById('filter-wilaya').value;
+            document.getElementById('filter-center').innerHTML = '<option value="">كل المقاطعات/المراكز</option>';
+            document.getElementById('filter-school').innerHTML = '<option value="">كل المدارس</option>';
+            document.getElementById('filter-school').disabled = true;
+
+            if (selectedWilaya && appState.keys.center) {
+                const centers = new Set(appState.currentData.filter(s => s[appState.keys.wilaya] === selectedWilaya).map(s => s[appState.keys.center]).filter(Boolean));
+                populateDropdown('filter-center', centers);
+            } else { document.getElementById('filter-center').disabled = true; }
+            applyFilters();
+        }
+
+        function onCenterChange() {
+            const selectedWilaya = document.getElementById('filter-wilaya').value;
+            const selectedCenter = document.getElementById('filter-center').value;
+            document.getElementById('filter-school').innerHTML = '<option value="">كل المدارس</option>';
+
+            if (selectedCenter && appState.keys.school) {
+                const schools = new Set(appState.currentData.filter(s => {
+                    let match = s[appState.keys.center] === selectedCenter;
+                    if (selectedWilaya) match = match && s[appState.keys.wilaya] === selectedWilaya;
+                    return match;
+                }).map(s => s[appState.keys.school]).filter(Boolean));
+                populateDropdown('filter-school', schools);
+            } else { document.getElementById('filter-school').disabled = true; }
+            applyFilters();
+        }
+
+        function handleSearch() { applyFilters(); }
+
+        function applyFilters() {
+            const query = normalizeArabic(document.getElementById('search-input').value.trim());
+            const selectedWilaya = document.getElementById('filter-wilaya').value;
+            const selectedCenter = document.getElementById('filter-center').value;
+            const selectedSchool = document.getElementById('filter-school').value;
+            const passOnly = document.getElementById('pass-only-toggle').checked;
+
+            let filtered = appState.currentData.filter(student => {
+                let match = true;
+                if (selectedWilaya && appState.keys.wilaya && student[appState.keys.wilaya] !== selectedWilaya) match = false;
+                if (selectedCenter && appState.keys.center && student[appState.keys.center] !== selectedCenter) match = false;
+                if (selectedSchool && appState.keys.school && student[appState.keys.school] !== selectedSchool) match = false;
+                if (query && !student._searchStr.includes(query)) match = false;
+                if (passOnly && student._status !== 'pass') match = false;
+                return match;
+            });
+
+            filtered.sort((a, b) => {
+                if (b._scoreVal !== a._scoreVal) return b._scoreVal - a._scoreVal;
                 return a._nameStr.localeCompare(b._nameStr, 'ar');
             });
-            appState.currentData = data;
-            appState.filteredData = data;
+
+            let currentRank = 1;
+            for (let i = 0; i < filtered.length; i++) {
+                if (i > 0 && filtered[i]._scoreVal === filtered[i-1]._scoreVal) {
+                    filtered[i]._computedRank = filtered[i-1]._computedRank;
+                } else {
+                    filtered[i]._computedRank = currentRank;
+                }
+                currentRank++;
+            }
+
+            appState.filteredData = filtered;
             appState.currentPage = 1;
+            
+            renderTop10();
             renderResults(true);
         }
-        function renderResults(reset = false) {
-            const container = document.getElementById('results-container');
-            const loadMoreBtn = document.getElementById('load-more');          
-            if (reset) { container.innerHTML = ""; appState.currentPage = 1; }
-            const startIndex = (appState.currentPage - 1) * appState.itemsPerPage;
-            const endIndex = startIndex + appState.itemsPerPage;
-            const itemsToRender = appState.filteredData.slice(startIndex, endIndex)            
-            if (itemsToRender.length === 0 && reset) {
-                container.innerHTML = `
-                    <div class="status-notice-box" style="border: none;">
-                        <span class="status-icon">🔍</span>
-                        <div class="status-title" style="color:var(--text-gray)">لا توجد نتائج مطابقة</div>
-                        <p class="status-desc">تأكد من كتابة الاسم أو الرقم بشكل صحيح لتصفية الصفوف.</p>
-                    </div>`;
-                loadMoreBtn.style.display = 'none'; return;
+
+        function renderTop10() {
+            const top10Section = document.getElementById('top-10-section');
+            const top10Container = document.getElementById('top-10-container');
+            
+            if (appState.filteredData.length === 0) {
+                top10Section.classList.add('hidden');
+                return;
             }
-            itemsToRender.forEach(student => {
-                const name = student._nameStr || "غير متوفر";
-                const num = appState.keys.num && student[appState.keys.num] ? student[appState.keys.num] : "غير متوفر";
-                const center = appState.keys.center && student[appState.keys.center] ? student[appState.keys.center] : "غير مدرج";
-                const status = student._status;
-                let avgStr = student._avgStr;
-                if (student._avg === -1 && avgStr === "") avgStr = "غير مدرج";              
-                let resultStr = student._resStr;
-                let badgeClass = 'badge-success';
-                let badgeText = resultStr || 'ناجح';
-                if (status === 'fail') {
-                    badgeClass = 'badge-danger'; badgeText = resultStr || 'راسب';
-                } else if (status === 'session') {
-                    badgeClass = 'badge-info'; badgeText = resultStr || 'دورة (معيد)';
-                } else if (status === 'absent') {
-                    badgeClass = 'badge-warning'; badgeText = resultStr || 'غائب';
-                }
+
+            top10Section.classList.remove('hidden');
+            top10Container.innerHTML = '';
+            
+            const top10 = appState.filteredData.slice(0, 10);
+            const scoreLabel = 'المجموع';
+            const fragment = document.createDocumentFragment(); // استخدام جزء الصفحة للتسريع
+
+            top10.forEach((student, index) => {
+                const rank = index + 1; 
+                let rankClass = 'rank-other';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                const school = appState.keys.school && student[appState.keys.school] ? student[appState.keys.school] : 'غير مدرج';
+                const wilaya = appState.keys.wilaya && student[appState.keys.wilaya] ? student[appState.keys.wilaya] : '';
+
                 const card = document.createElement('div');
-                card.className = 'student-card';
-                card.onclick = () => openDetailsPage(student);            
+                card.className = 'top-card';
+                card.onclick = () => openDetailsPage(student);
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div>
-                            <div class="student-name">${name}</div>
-                            <div class="student-number">رقم الجلوس: ${num}</div>
-                        </div>
-                        <div class="result-badge ${badgeClass}">${badgeText}</div>
-                    </div>
-                    <div class="card-details">
-                        <p>المركز: <span>${center}</span></p>
-                        <p>المعدل المستخرج: <span style="color:var(--primary); font-size:1rem;">${avgStr}</span></p>
+                    <div class="top-rank-badge ${rankClass}">${rank}</div>
+                    <div class="top-name">${student._nameStr}</div>
+                    <div class="top-score">${scoreLabel}: ${student._scoreStr}</div>
+                    <div class="top-details">
+                        <p>المدرسة: <span>${school}</span></p>
+                        ${wilaya ? `<p>الولاية: <span>${wilaya}</span></p>` : ''}
                     </div>
                 `;
-                container.appendChild(card);
+                fragment.appendChild(card);
             });
-            if (endIndex < appState.filteredData.length) loadMoreBtn.style.display = 'block';
-            else loadMoreBtn.style.display = 'none';
+            top10Container.appendChild(fragment);
         }
-        function loadMoreData() { appState.currentPage++; renderResults(false); }
-        function handleSearch() {
-            const query = normalizeArabic(document.getElementById('search-input').value.trim());
-            const toggBox = document.getElementById('suggestions-box');           
-            if (!query) {
-                appState.filteredData = appState.currentData;
-                toggBox.style.display = 'none'; renderResults(true); return;
+
+        function renderResults(reset = false) {
+            const container = document.getElementById('results-container');
+            const loadMoreBtn = document.getElementById('load-more');
+            
+            if (reset) { container.innerHTML = ""; appState.currentPage = 1; }
+
+            const startIndex = (appState.currentPage - 1) * appState.itemsPerPage;
+            const endIndex = startIndex + appState.itemsPerPage;
+            const itemsToRender = appState.filteredData.slice(startIndex, endIndex);
+
+            if (itemsToRender.length === 0 && reset) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 30px; color: var(--text-gray); font-weight:700; background: #fff; border-radius: 12px;">لا توجد نتائج مطابقة لبحثك ضمن الفلاتر المحددة.</div>`;
+                loadMoreBtn.style.display = 'none'; return;
             }
-            appState.filteredData = appState.currentData.filter(student => student._searchStr.includes(query));
-            let suggestionsSet = new Set();
-            appState.filteredData.forEach(student => {
-                appState.columns.forEach(col => {
-                    const val = student[col];
-                    if (val && normalizeArabic(val).includes(query)) suggestionsSet.add(val.toString().trim());
-                });
+
+            const scoreLabel = 'المجموع';
+            const fragment = document.createDocumentFragment(); // تسريع الإضافة لـ DOM
+
+            itemsToRender.forEach((student) => {
+                const num = appState.keys.num && student[appState.keys.num] ? student[appState.keys.num] : "غير متوفر";
+                const location = (appState.keys.school && student[appState.keys.school]) || (appState.keys.center && student[appState.keys.center]) || "غير مدرج";
+                
+                let badgeClass = 'badge-success';
+                let badgeText = student._resStr || 'ناجح';
+                if (student._status === 'fail') { badgeClass = 'badge-danger'; badgeText = student._resStr || 'راسب'; }
+                else if (student._status === 'session') { badgeClass = 'badge-warning'; badgeText = student._resStr || 'دورة'; }
+                else if (student._status === 'absent') { badgeClass = 'badge-info'; badgeText = student._resStr || 'غائب'; }
+
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.onclick = () => openDetailsPage(student);
+                card.innerHTML = `
+                    <div class="card-header-top">
+                        <div class="general-rank">الترتيب: ${student._computedRank || '-'}</div>
+                        <div class="result-badge ${badgeClass}">${badgeText}</div>
+                    </div>
+                    <div class="student-name">${student._nameStr}</div>
+                    <div class="student-number">رقم الترشح: ${num}</div>
+                    <div class="card-divider"></div>
+                    <div class="card-footer">
+                        <div class="card-meta">
+                            المؤسسة/المركز:<br><span>${location}</span>
+                        </div>
+                        <div class="card-meta" style="text-align: left;">
+                            ${scoreLabel}:<br><span style="color: var(--primary); font-size: 1rem;">${student._scoreStr}</span>
+                        </div>
+                    </div>
+                `;
+                fragment.appendChild(card);
             });
-            const suggestionsArr = Array.from(suggestionsSet).slice(0, 6);
-            if (suggestionsArr.length > 0) {
-                toggBox.innerHTML = suggestionsArr.map(s => `<div class="suggestion-item" onclick="selectSuggestion('${s.replace(/'/g, "\\'")}')">${s}</div>`).join('');
-                toggBox.style.display = 'block';
-            } else toggBox.style.display = 'none';
-            renderResults(true);
+            
+            // إضافة كل البطاقات دفعة واحدة لتسريع العرض
+            container.appendChild(fragment);
+
+            if (appState.filteredData.length > endIndex) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         }
-        function selectSuggestion(value) {
-            document.getElementById('search-input').value = value;
-            document.getElementById('suggestions-box').style.display = 'none';
-            handleSearch(); 
+
+        function loadMoreData() {
+            appState.currentPage++;
+            renderResults();
         }
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) document.getElementById('suggestions-box').style.display = 'none';
-        });
+
         function openDetailsPage(student) {
-            localStorage.setItem('saved_scroll_y', window.scrollY || document.documentElement.scrollTop);
             document.getElementById('main-view').style.display = 'none';
-            document.getElementById('details-page').style.display = 'block';
-            window.scrollTo(0, 0);           
-            const grid = document.getElementById('page-details-grid');
-            document.getElementById('page-name').innerText = student._nameStr || "بيانات الطالب التفصيلية";
-            const msgContainer = document.getElementById('motivation-container');
-            const status = student._status;          
-            if (status === 'pass') {
-                msgContainer.innerHTML = `<div class="motivation-msg msg-success">مبارك النجاح الباهر! 🌟 لقد تكللت جهودك ومثابرتك بالتميز المستحق.</div>`;
-                setTimeout(launchCelebration, 150);
-            } else if (status === 'session') {
-                msgContainer.innerHTML = `<div class="motivation-msg msg-session">أمامك فرصة ذهبية في الدورة التكميلية. لم يفت شيء، ثق بنفسك واشحذ همتك للتعويض الجبار!</div>`;
-            } else if (status === 'fail') {
-                msgContainer.innerHTML = `<div class="motivation-msg msg-fail">ليست نهاية المطاف، بل هي محطة لبناء العزيمة. تعلم من الكبوة لتنطلق أقوى في العام القادم.</div>`;
-            } else if (status === 'absent') {
-                msgContainer.innerHTML = `<div class="motivation-msg msg-absent">الغياب عذر مؤقت، نتمنى أن يكون المانع خيراً وعوضك الله بالتوفيق والنجاح الدائم.</div>`;
-            }
-            grid.innerHTML = "";
+            const detailsPage = document.getElementById('details-page');
+            detailsPage.style.display = 'block';
+            
+            document.getElementById('page-name').textContent = student._nameStr;
+            
+            const list = document.getElementById('page-details-list');
+            list.innerHTML = '';
+            
             appState.columns.forEach(col => {
-                if (student[col] !== undefined && student[col] !== null && student[col].toString().trim() !== "") {
-                    grid.innerHTML += `<div class="data-item"><span class="data-label">${col}</span><span class="data-val">${student[col]}</span></div>`;
+                if(student[col] && student[col].toString().trim() !== '') {
+                    list.innerHTML += `<div class="data-row"><div class="data-label">${col}</div><div class="data-val">${student[col]}</div></div>`;
                 }
             });
-        }
-        function closeDetailsPage() {
-            document.getElementById('details-page').style.display = 'none';
-            document.getElementById('main-view').style.display = 'block';          
-            const savedScroll = localStorage.getItem('saved_scroll_y');
-            if (savedScroll) {
-                setTimeout(() => { window.scrollTo({ top: parseInt(savedScroll), behavior: 'auto' }); }, 30);
+
+            // إطلاق الاحتفال إذا كان الطالب ناجحاً
+            if(student._status === 'pass' && typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             }
         }
-        function launchCelebration() {
-            if (typeof confetti !== 'function') return; 
-            var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-                var particleCount = 50 * (timeLeft / duration);            
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
+
+        function closeDetailsPage() {
+            document.getElementById('details-page').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
         }
     </script>
 </body>
-</html> 
+</html>
