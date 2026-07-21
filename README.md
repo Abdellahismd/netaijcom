@@ -2,9 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <meta name="google-site-verification" content="RGmaHbaVjWZZXmJmQLvya4NXvG-TWkz8FsnwpR6jw4A" />
     <title>نتائج الامتحانات الوطنية</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
