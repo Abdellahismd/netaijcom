@@ -1,8 +1,10 @@
+Netaijcom
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نتائج الامتحانات الوطنية</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -36,7 +38,7 @@
         /* ================= الهيدر والتبويبات ================= */
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 16px 8px 24px 8px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 16px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
         .header-title { color: #ffffff; font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
-        .exam-tabs { display: flex; justify-content: center; gap: 8px; max-width: 400px; margin: 0 auto; }
+        .exam-tabs { display: flex; justify-content: center; gap: 6px; max-width: 600px; margin: 0 auto; flex-wrap: wrap; }
         .exam-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; padding: 6px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: var(--transition); flex: 1; text-align: center; line-height: 1.2; }
         .exam-btn.active { background: #ffffff; color: var(--primary); font-weight: 800; border-color: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transform: scale(1.02); }
         .stats-main-btn { flex: none; background: var(--accent); border-color: var(--warning); padding: 6px 12px; }
@@ -175,6 +177,11 @@
         .status-absent .d-circular-progress { background: conic-gradient(var(--warning) 0%, #e2e8f0 0deg); }
         .status-absent .d-score-val { color: #b45309; }
 
+        .status-expelled .d-header-colored { background: #fee2e2; }
+        .status-expelled .d-badge { background: #7f1d1d; color: #fff; }
+        .status-expelled .d-circular-progress { background: conic-gradient(#7f1d1d 0%, #e2e8f0 0deg); }
+        .status-expelled .d-score-val { color: #7f1d1d; }
+
         /* ================= صفحة الإحصائيات ================= */
         #stats-page { display: none; padding: 15px 8px 30px 8px; max-width: 800px; margin: 0 auto; animation: slideUp 0.3s ease; }
         .stats-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -193,6 +200,9 @@
         .stats-section-title { font-size: 1rem; font-weight: 800; color: var(--primary); margin: 0 0 12px 0; display: flex; align-items: center; gap: 6px; }
         .stats-section-title::before { content: ''; display: block; width: 4px; height: 16px; background: var(--primary); border-radius: 4px; }
 
+        .home-exam-tabs { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; padding: 0 15px; }
+        .home-exam-tabs .exam-btn { padding: 12px; font-size: 1rem; border-radius: 12px; }
+        
         .btn-load-more { display: none; width: 100%; margin: 12px 0; background: #fff; color: var(--primary); border: 1px solid var(--primary); padding: 6px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: var(--transition); text-align: center; }
         .btn-load-more:hover { background: var(--primary); color: #fff; }
         .hidden { display: none !important; }
@@ -200,14 +210,29 @@
 </head>
 <body>
 
-    <div id="main-view">
+    <div id="home-page">
         <header class="header">
-            <h1 class="header-title">نتائج الامتحانات الوطنية</h1>
-            <div class="exam-tabs">
-                <button class="exam-btn active" onclick="changeExam('concour', this)">مسابقة دخول الإعدادية</button>
+            <h1 class="header-title">نتائج الامتحانات الوطنية 2026</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.85rem; margin-bottom: 20px;">الرجاء اختيار الامتحان لعرض النتائج</p>
+            <div class="home-exam-tabs">
+                <button class="exam-btn" onclick="changeExam('concour', this)">مسابقة دخول الإعدادية</button>
                 <button class="exam-btn" onclick="changeExam('brevet', this)">شهادة ختم الدروس الإعدادية</button>
-                <button class="exam-btn stats-main-btn" onclick="openStatsPage()">الإحصائيات 📊</button>
+                <button class="exam-btn" onclick="changeExam('bac', this)">البكالوريا</button>
             </div>
+        </header>
+        
+        <div style="padding: 20px; text-align: center;">
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">منصة مراجعي تتمنى لكم التوفيق والنجاح 🎓</p>
+        </div>
+    </div>
+
+    <div id="main-view" style="display: none;">
+        <header class="header">
+            <div style="display: flex; gap: 10px; max-width: 600px; margin: 0 auto; padding: 0 10px; margin-bottom: 15px;">
+                <button onclick="showHomePage()" style="flex: 1; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 1rem;">رجوع</button>
+                <button class="exam-btn stats-main-btn" style="flex: 1; margin: 0; padding: 10px; border-radius: 8px; font-size: 1rem;" onclick="openStatsPage()">الإحصائيات 📊</button>
+            </div>
+            <h1 class="header-title" id="current-exam-title">نتائج الامتحانات</h1>
         </header>
 
         <div class="controls-container">
@@ -222,8 +247,9 @@
                     <button class="status-btn active" onclick="setStatusFilter('all', this)">الكل</button>
                     <button class="status-btn" onclick="setStatusFilter('pass', this)">ناجح</button>
                     <button class="status-btn" onclick="setStatusFilter('fail', this)">راسب</button>
-                    <button class="status-btn" onclick="setStatusFilter('absent', this)">غائب</button>
-                    <button class="status-btn" onclick="setStatusFilter('session', this)">دورة/مقصى</button>
+                    <button id="btn-session" class="status-btn" style="display: none;" onclick="setStatusFilter('session', this)">دورة تكميلية</button>
+                    <button id="btn-absent" class="status-btn" onclick="setStatusFilter('absent', this)">غائب</button>
+                    <button id="btn-expelled" class="status-btn" onclick="setStatusFilter('expelled', this)">مطرود</button>
                 </div>
             </div>
         </div>
@@ -295,6 +321,8 @@
                 </div>
             </div>
             
+            <div id="d-motivation" style="margin-top: 15px; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem; font-weight: 700;"></div>
+
             <div class="d-extra-details" id="d-extra-details"></div>
         </div>
     </div>
@@ -310,11 +338,49 @@
     <script>
         const DATA_URLS = {
             concour: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTlJq68a973gbhoAwubzYAcdrMx1VVg3d14HH0aTZw6TBIRwU0FnVwU6fjCvHzxBg/pub?gid=361235812&single=true&output=csv",
-            brevet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmlFARDtbicSO0XnNpLZhHGGaroLusxOIx7NsN34rkKYSWdSDn5wltRPjpUk4CaQ/pub?gid=1962707704&single=true&output=csv"
+            brevet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSmlFARDtbicSO0XnNpLZhHGGaroLusxOIx7NsN34rkKYSWdSDn5wltRPjpUk4CaQ/pub?gid=1962707704&single=true&output=csv",
+            bac: ""
         };
 
-        // نظام تخزين مؤقت للبيانات لتسريع التبديل بين الصفحات
-        let cacheData = { concour: null, brevet: null };
+        let cacheData = { concour: null, brevet: null, bac: null };
+        const DB_NAME = "ExamResultsDB";
+        const STORE_NAME = "resultsCache";
+        let localDB = null;
+
+        function initDB() {
+            return new Promise((resolve) => {
+                if (localDB) return resolve(localDB);
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = e => { e.target.result.createObjectStore(STORE_NAME); };
+                req.onsuccess = e => { localDB = e.target.result; resolve(localDB); };
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        async function getFromDB(key) {
+            try {
+                const db = await initDB();
+                if (!db) return null;
+                return new Promise(resolve => {
+                    const tx = db.transaction(STORE_NAME, "readonly");
+                    const req = tx.objectStore(STORE_NAME).get(key);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => resolve(null);
+                });
+            } catch (e) { return null; }
+        }
+
+        async function saveToDB(key, data) {
+            try {
+                const db = await initDB();
+                if (!db) return;
+                return new Promise(resolve => {
+                    const tx = db.transaction(STORE_NAME, "readwrite");
+                    tx.objectStore(STORE_NAME).put({ data, timestamp: Date.now() }, key);
+                    tx.oncomplete = () => resolve();
+                });
+            } catch (e) {}
+        }
 
         let appState = {
             currentData: [],     
@@ -327,11 +393,47 @@
             statusFilter: 'all'
         };
 
-        document.addEventListener('DOMContentLoaded', () => { changeExam('concour', document.querySelector('.exam-btn')); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            showHomePage(); 
+        });
 
-        function changeExam(type, btnElement) {
+        function showHomePage() {
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('details-page').style.display = 'none';
+            document.getElementById('stats-page').style.display = 'none';
+        }
+
+        async function changeExam(type, btnElement) {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
+            
             document.querySelectorAll('.exam-btn:not(.stats-main-btn)').forEach(btn => btn.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
+            
+            let examTitle = "نتائج الامتحانات";
+            if (type === 'concour') examTitle = "مسابقة دخول الإعدادية";
+            else if (type === 'brevet') examTitle = "شهادة ختم الدروس الإعدادية";
+            else if (type === 'bac') examTitle = "البكالوريا";
+            document.getElementById('current-exam-title').innerText = examTitle;
+
+            const sessionBtn = document.getElementById('btn-session');
+            const absentBtn = document.getElementById('btn-absent');
+            const expelledBtn = document.getElementById('btn-expelled');
+            
+            if (type === 'bac') {
+                sessionBtn.style.display = 'inline-block';
+            } else {
+                sessionBtn.style.display = 'none';
+            }
+            
+            if (type === 'concour') {
+                absentBtn.style.display = 'none';
+                expelledBtn.style.display = 'none';
+            } else {
+                absentBtn.style.display = 'inline-block';
+                expelledBtn.style.display = 'inline-block';
+            }
             
             document.getElementById('search-input').value = '';
             appState.statusFilter = 'all';
@@ -342,6 +444,10 @@
             resetDropdowns();
             appState.currentExam = type;
 
+            if (document.getElementById('stats-page').style.display === 'block') {
+                closeStatsPage();
+            }
+
             if (cacheData[type]) {
                 // استرجاع البيانات فوراً من الذاكرة
                 appState.columns = cacheData[type].columns;
@@ -350,7 +456,26 @@
                 initDropdowns();
                 applyFilters();
             } else {
-                fetchData(type);
+                appState.currentData = []; // إفراغ البيانات السابقة
+                appState.filteredData = [];
+                appState.columns = [];
+                appState.keys = {};
+                showLoading();
+                const cached = await getFromDB(type);
+                // 30 minutes cache
+                if (cached && (Date.now() - cached.timestamp < 30 * 60 * 1000)) {
+                    cacheData[type] = cached.data;
+                    appState.columns = cached.data.columns;
+                    appState.keys = cached.data.keys;
+                    appState.currentData = cached.data.data;
+                    initDropdowns();
+                    applyFilters();
+                    
+                    // Fetch quietly in background
+                    fetchDataQuietly(type);
+                } else {
+                    fetchData(type);
+                }
             }
         }
 
@@ -367,29 +492,49 @@
         }
 
         function fetchData(examType) {
-            showLoading();
-            setTimeout(() => {
-                Papa.parse(DATA_URLS[examType], {
-                    download: true,
-                    header: true,
-                    skipEmptyLines: 'greedy',
-                    worker: true,
-                    complete: function(results) {
-                        if (results.data && results.data.length > 0) {
-                            appState.columns = results.meta.fields || Object.keys(results.data[0]);
-                            setTimeout(() => {
-                                setupKeysAndParse(results.data, examType); 
-                            }, 50);
-                        } else {
-                            showErrorMsg("الملف فارغ، يرجى التأكد من المصدر.");
-                        }
-                    }, 
-                    error: function(err) { 
-                        console.error("خطأ في الجلب:", err);
-                        showErrorMsg("تعذر سحب النتائج حالياً، يرجى التحقق من اتصال الإنترنت."); 
+            if (!DATA_URLS[examType]) {
+                const container = document.getElementById('results-container');
+                container.innerHTML = `
+                    <div class="loading-container">
+                        <div style="margin-bottom: 15px; font-size: 1.2rem;">⏳</div>
+                        <div>في انتظار صدور النتائج... سيتم إضافتها فور توفرها.</div>
+                    </div>`;
+                return;
+            }
+            Papa.parse(DATA_URLS[examType], {
+                download: true,
+                header: true,
+                skipEmptyLines: 'greedy',
+                worker: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        appState.columns = results.meta.fields || Object.keys(results.data[0]);
+                        setupKeysAndParse(results.data, examType, false); 
+                    } else {
+                        showErrorMsg("الملف فارغ، يرجى التأكد من المصدر.");
                     }
-                });
-            }, 50);
+                }, 
+                error: function(err) { 
+                    console.error("خطأ في الجلب:", err);
+                    showErrorMsg("تعذر سحب النتائج حالياً، يرجى التحقق من اتصال الإنترنت."); 
+                }
+            });
+        }
+        
+        function fetchDataQuietly(examType) {
+            if (!DATA_URLS[examType]) return;
+            Papa.parse(DATA_URLS[examType], {
+                download: true,
+                header: true,
+                skipEmptyLines: 'greedy',
+                worker: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        appState.columns = results.meta.fields || Object.keys(results.data[0]);
+                        setupKeysAndParse(results.data, examType, true); 
+                    }
+                }
+            });
         }
 
         function showErrorMsg(msg) {
@@ -399,10 +544,14 @@
                 </div>`;
         }
 
+        const arabicRegex1 = /[أإآأ]/g;
+        const arabicRegex2 = /ة/g;
+        const arabicRegex3 = /ى/g;
+        const arabicRegex4 = /[ً-ْ]/g;
         function normalizeArabic(text) {
             if (!text) return "";
             return text.toString().toLowerCase()
-                .replace(/[أإآأ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ً-ْ]/g, ""); 
+                .replace(arabicRegex1, 'ا').replace(arabicRegex2, 'ه').replace(arabicRegex3, 'ي').replace(arabicRegex4, ""); 
         }
 
         function getMatchingKey(keysArray, possibleKeys) {
@@ -417,7 +566,7 @@
             return undefined; 
         }
 
-        function setupKeysAndParse(data, examType) {
+        function setupKeysAndParse(data, examType, isQuiet = false) {
             const resKey = getMatchingKey(appState.columns, ['decision', 'décision', 'النتيجة', 'القرار', 'resultat', 'ملاحظة', 'قرار']);
             const scoreKey = getMatchingKey(appState.columns, ['moyg', 'moyenne', 'moy', 'المعدل', 'mgex', 'total', 'مجموع', 'note', 'points']);
             const nameKey = getMatchingKey(appState.columns, ['nom', 'name', 'اسم', 'الاسم']);
@@ -465,24 +614,29 @@
 
                 let status = 'fail';
                 
-                let isAjourne = resultStr.includes('راسب') || resultStr.includes('ajourn') || resultStr.includes('echec') || resultStr.includes('مقصى') || resultStr.includes('غير ناجح') || resultStr.includes('غير مؤهل') || resultStr.includes('échoué') || resultStr.includes('non admis');
+                let isExpelled = resultStr.includes('مطرود') || resultStr.includes('exclu') || resultStr.includes('fraude') || resultStr.includes('elim') || resultStr.includes('مقصى') || resultStr.includes('إقصاء');
                 let isAbsent = resultStr.includes('غائب') || resultStr.includes('abs');
-                let isAdmis = (!isAjourne && !isAbsent) && (resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr.includes('مؤهل') || resultStr === 'a' || resultStr.includes('adm'));
+                let isSession = resultStr.includes('دورة') || resultStr.includes('مؤهل') || resultStr.includes('session') || resultStr.includes('تكميلية');
+                let isAjourne = resultStr.includes('راسب') || resultStr.includes('ajourn') || resultStr.includes('echec') || resultStr.includes('غير ناجح') || resultStr.includes('échoué') || resultStr.includes('non admis');
+                let isAdmis = (!isAjourne && !isAbsent && !isExpelled && !isSession) && (resultStr.includes('ناجح') || resultStr.includes('admis') || resultStr === 'a' || resultStr.includes('adm') || resultStr.includes('pass'));
 
                 if (isConcour) {
                     if (resultStr) {
-                        if (isAbsent) status = 'absent';
+                        if (isExpelled) status = 'expelled';
+                        else if (isAbsent) status = 'absent';
                         else if (isAdmis) status = 'pass';
+                        else if (isSession) status = 'session';
                         else if (isAjourne) status = 'fail';
                         else status = scoreVal >= 85 ? 'pass' : 'fail';
                     } else {
                         status = scoreVal >= 85 ? 'pass' : 'fail';
                     }
                 } else {
-                    if (isAbsent) status = 'absent';
+                    if (isExpelled) status = 'expelled';
+                    else if (isAbsent) status = 'absent';
                     else if (isAdmis) status = 'pass';
                     else if (isAjourne) status = 'fail';
-                    else if (resultStr.includes('دورة') || resultStr.includes('session') || resultStr.includes('تكميلية')) status = 'session';
+                    else if (isSession) status = 'session';
                     else status = scoreVal >= 10 ? 'pass' : 'fail';
                 }
 
@@ -497,9 +651,9 @@
             });
 
             data.sort((a, b) => {
-                const statusOrder = { 'pass': 1, 'session': 2, 'fail': 3, 'absent': 4 };
-                const orderA = statusOrder[a._status] || 5;
-                const orderB = statusOrder[b._status] || 5;
+                const statusOrder = { 'pass': 1, 'session': 2, 'fail': 3, 'absent': 4, 'expelled': 5 };
+                const orderA = statusOrder[a._status] || 6;
+                const orderB = statusOrder[b._status] || 6;
                 if (orderA !== orderB) return orderA - orderB;
                 let valA = a._scoreVal !== -1 ? a._scoreVal : -999;
                 let valB = b._scoreVal !== -1 ? b._scoreVal : -999;
@@ -526,16 +680,24 @@
                 actualRank++;
             });
 
-            // حفظ في الذاكرة
-            cacheData[examType] = {
+            const cacheObj = {
                 data: data,
                 columns: appState.columns,
                 keys: appState.keys
             };
+            
+            // حفظ في الذاكرة
+            cacheData[examType] = cacheObj;
+            
+            // حفظ في قاعدة البيانات المحلية (IndexedDB)
+            saveToDB(examType, cacheObj);
 
-            appState.currentData = data;
-            initDropdowns();
-            applyFilters();
+            if (!isQuiet) {
+                appState.currentData = data;
+                initDropdowns();
+                applyFilters();
+                document.getElementById('top-section').classList.remove('hidden');
+            }
         }
 
         // ================= الفلترة وتحديث القوائم ================= //
@@ -794,23 +956,45 @@
             
             let statusText = '';
             let progressColor = '';
+            let motivationText = '';
+            let motivationBg = '';
+            let motivationColor = '';
             
             if (student._status === 'pass') {
                 statusText = 'ناجح ✔';
                 progressColor = 'var(--success)';
+                motivationText = 'منصة مراجعي تهنئك بمناسبة النجاح، ألف مبروك! 🎉';
+                motivationBg = '#dcfce7'; motivationColor = '#166534';
             } else if (student._status === 'fail') {
                 statusText = 'راسب ✖';
                 cardMain.classList.add('status-fail');
                 progressColor = 'var(--danger)';
+                motivationText = 'منصة مراجعي تتمنى لك حظاً أوفر في المرات القادمة، لا تيأس! 💪';
+                motivationBg = '#fee2e2'; motivationColor = '#991b1b';
             } else if (student._status === 'absent') {
                 statusText = 'غائب';
                 cardMain.classList.add('status-absent');
                 progressColor = 'var(--warning)';
+                motivationText = 'تم تسجيل المترشح غائباً.';
+                motivationBg = '#fef3c7'; motivationColor = '#92400e';
             } else if (student._status === 'session') {
                 statusText = 'دورة تكميلية';
                 cardMain.classList.add('status-session');
                 progressColor = 'var(--info)';
+                motivationText = 'منصة مراجعي تتمنى لك التوفيق في الدورة التكميلية، فرصتك ما زالت قائمة! 🚀';
+                motivationBg = '#e0f2fe'; motivationColor = '#075985';
+            } else if (student._status === 'expelled') {
+                statusText = 'مطرود';
+                cardMain.classList.add('status-expelled');
+                progressColor = '#7f1d1d';
+                motivationText = 'تم إقصاء هذا المترشح بسبب الغياب أو مخالفة القوانين.';
+                motivationBg = '#fecaca'; motivationColor = '#7f1d1d';
             }
+            
+            const motivationEl = document.getElementById('d-motivation');
+            motivationEl.innerText = motivationText;
+            motivationEl.style.backgroundColor = motivationBg;
+            motivationEl.style.color = motivationColor;
             
             // Set basic info
             document.getElementById('d-status-badge').innerText = student._resStr || statusText;
@@ -902,7 +1086,11 @@
             
             const total = appState.currentData.length;
             if (total === 0) {
-                content.innerHTML = '<div class="loading-container">لا توجد بيانات للإحصاء</div>';
+                content.innerHTML = `
+                    <div class="loading-container">
+                        <div style="margin-bottom: 15px; font-size: 1.2rem;">⏳</div>
+                        <div>في انتظار صدور النتائج... سيتم إضافتها فور توفرها.</div>
+                    </div>`;
                 return;
             }
             
@@ -910,17 +1098,21 @@
             const failed = appState.currentData.filter(s => s._status === 'fail').length;
             const absent = appState.currentData.filter(s => s._status === 'absent').length;
             const session = appState.currentData.filter(s => s._status === 'session').length;
+            const expelled = appState.currentData.filter(s => s._status === 'expelled').length;
             
             const rate = ((passed / total) * 100).toFixed(2);
             
             let html = `
-                <div class="stats-grid-large">
-                    <div class="stat-card-lg"><span>إجمالي المترشحين</span><strong style="color:var(--text-dark);">${total.toLocaleString('en-US')}</strong></div>
-                    <div class="stat-card-lg"><span>نسبة النجاح العامة</span><strong style="color:var(--success);">${rate}%</strong></div>
+                <div class="stats-grid-large" style="grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));">
+                    <div class="stat-card-lg" style="grid-column: 1 / -1; display:flex; justify-content:space-around;">
+                        <div><span>إجمالي المترشحين</span><strong style="color:var(--text-dark);">${total.toLocaleString('en-US')}</strong></div>
+                        <div><span>نسبة النجاح العامة</span><strong style="color:var(--success);">${rate}%</strong></div>
+                    </div>
                     <div class="stat-card-lg"><span>الناجحون</span><strong style="color:var(--success);">${passed.toLocaleString('en-US')}</strong></div>
+                    <div class="stat-card-lg"><span>دورة تكميلية</span><strong style="color:var(--info);">${session.toLocaleString('en-US')}</strong></div>
                     <div class="stat-card-lg"><span>الراسبون</span><strong style="color:var(--danger);">${failed.toLocaleString('en-US')}</strong></div>
                     <div class="stat-card-lg"><span>الغائبون</span><strong style="color:var(--warning);">${absent.toLocaleString('en-US')}</strong></div>
-                    <div class="stat-card-lg"><span>مقصى / دورة</span><strong style="color:var(--info);">${session.toLocaleString('en-US')}</strong></div>
+                    <div class="stat-card-lg"><span>المطرودون</span><strong style="color:#7f1d1d;">${expelled.toLocaleString('en-US')}</strong></div>
                 </div>
             `;
             
